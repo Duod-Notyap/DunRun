@@ -21,5 +21,22 @@ OVERALL MECHANINICS:
 	-Experience and Gold Gain
 		experience gain up goes up with the algorithm of [Exp = (enemyLevel)^3] 
 		Leveling up will go by a intuitive scale TBD with feel and feedback
-		>[BETA UNOFFICAL DESCION] Gold gain will be dropped
+		>[BETA UNOFFICAL DESCION] Gold gain will be dropped according to the level of the enemy
+	
+	-Dungeons
+		Dungeons hold enemies, each dungeon has a shop (see shops for more info) once you defeat all enemies in a dungeon
+		you go into a new dungeon. every 10 dungeons has a mega boss. each dungeon gets progressively harder
+			
+	-Environments
+		Environments may determine the type of enemies that spawn and possibly conditions of battle
+	
+	-Death
+	 	Death is part of the game. Once you die you go back to the first dungeon.
+	 	you keep your level, experience, and items.
+	 
+	 -Shop
+	 	Shops display 5 different Items per dungeon. often varies on the level of the dungeon.
+	 	
+	 	
+
 		

@@ -31,6 +31,8 @@ public class Character extends Entity {
 		
 		for(Item a : i){this.inventory.add(a);}
 		for(Item a : ei){this.equippedItems.add(a);}
+		
+		body_setup();
 	}
 	
 
@@ -49,17 +51,17 @@ public class Character extends Entity {
 	
 
 	public void body_setup() {
-		//this is for the points of the charcter
-		this.body_status.put("Head", false);
-		this.body_status.put("Neck", false);
-		this.body_status.put("Upper Body", false);
-		this.body_status.put("Lower Body", false);
-		this.body_status.put("Upper Legs", false);
-		this.body_status.put("Lower Legs", false);
-		this.body_status.put("Upper Arms", false);
-		this.body_status.put("Lower Arms", false);
-		this.body_status.put("Hand", false);
-		this.body_status.put("Foot", false);
+		//this is for the points of the character
+		this.body_status.put("Head", 1.0);
+		this.body_status.put("Neck", 1.0);
+		this.body_status.put("Upper Body", 1.0);
+		this.body_status.put("Lower Body", 1.0);
+		this.body_status.put("Upper Legs", 1.0);
+		this.body_status.put("Lower Legs", 1.0);
+		this.body_status.put("Upper Arms", 1.0);
+		this.body_status.put("Lower Arms", 1.0);
+		this.body_status.put("Hand", 1.0);
+		this.body_status.put("Foot", 1.0);
 	}
 	
 	public static int CheckLevel(int a, int b) {

@@ -1,5 +1,6 @@
 package base;
 import java.util.ArrayList;
+
 public class Enemy extends Entity {
 	
 	public Enemy(String n, double hp, double att, double d, int lev, Item[] items, Item[] equipItems) {

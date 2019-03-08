@@ -10,7 +10,7 @@ public class DunRunMain {
 	public static int level;
 	public static double plrExp;
 	
-	static Character player = new Character(name,hp,attack,defense,level,plrExp, new Item[] {new Item (Item.PRDF_SWORD)}, new Item[] {new Item (Item.PRDF_SWORD)});
+	static Character player = new Character(name,hp,attack,defense,level,plrExp, new Item[] {}, new Item[] {new Item (Item.PRDF_SWORD)});
 
 
 	
@@ -78,6 +78,7 @@ public class DunRunMain {
 		else {
 			System.out.println("Unfortunatly, " + enemy.name + " Has beaten you to death, Sorry...");
 		}
+		sc.close();
 	}
 
 //	public static int damage(double level, int weapon, double AttackBase, double DefenseBase){
@@ -123,14 +124,18 @@ public class DunRunMain {
 		choice = sc.nextInt();
 		
 		switch(choice) {
-		case 1:player.level = 2;
+		case 1: player.level = 2;
 				player.attack = 5;
-			   player.defense = 3;
-			   player.basehp = 50.0;
-			   player.curhp = 50.0;
-			   player.mp = 10;
-			   player.exp = 33.0;
-			   player.equippedItems.add(new Item(Item.PRDF_DAGGER));
+			    player.defense = 3;
+			    player.basehp = 50.0;
+			    player.curhp = 50.0;
+			    player.mp = 10;
+			    player.exp = 33.0;
+			    player.equippedItems.add(new Item(Item.PRDF_DAGGER));
+				player.inventory.add(new Item(Item.PRDF_SMALLHEAL));
+				player.inventory.add(new Item(Item.PRDF_SMALLHEAL));
+				player.inventory.add(new Item(Item.PRDF_SMALLHEAL));
+				break;
 		case 2: player.level = 2;
 				player.attack = 8;
 				player.basehp = 50.0;
@@ -138,6 +143,10 @@ public class DunRunMain {
 				player.defense = 7;
 				player.exp = 33.0;
 				player.equippedItems.add(new Item(Item.PRDF_SWORD));
+				player.inventory.add(new Item(Item.PRDF_SMALLHEAL));
+				player.inventory.add(new Item(Item.PRDF_SMALLHEAL));
+				player.inventory.add(new Item(Item.PRDF_SMALLHEAL));
+				break;
 		case 3: player.level = 1;
 				player.level = 2;
 				player.attack = 8;
@@ -146,6 +155,11 @@ public class DunRunMain {
 				player.defense = 7;
 				player.exp = 33.0;
 				player.equippedItems.add(new Item(Item.PRDF_SWORD));
+				player.inventory.add(new Item(Item.PRDF_SMALLHEAL));
+				player.inventory.add(new Item(Item.PRDF_SMALLHEAL));
+				player.inventory.add(new Item(Item.PRDF_SMALLHEAL));
+				break;
+		case 4: break;
 		
 				
 		}
@@ -156,8 +170,9 @@ public class DunRunMain {
 
 		
 		Dungeon testdun = new Dungeon(player.level);
+		
 		testdun.play(player);
-
+		sc.close();
 	}
 
 	

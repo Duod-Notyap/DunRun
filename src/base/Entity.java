@@ -12,7 +12,7 @@ public class Entity {
 	public static double exp;
 	public int level;
 	public int mp;
-	public HashMap<String, Boolean> body_status = new HashMap<String, Boolean>();
+	public HashMap<String, Double> body_status = new HashMap<String, Double>();
 	public ArrayList<Item> inventory =  new ArrayList();
 	public ArrayList<Item> equippedItems =  new ArrayList();
 	
