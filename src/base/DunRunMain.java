@@ -109,6 +109,11 @@ public class DunRunMain {
 	}
 	
 	public static void main(String[] args) {
+		
+		Shop shop = new Shop();
+		player.gold = 15;
+		shop.transaction(player);
+		
 		//intro and name
 		System.out.println("Greetings, Welcome to DunRun!");
 		System.out.println("What tis your name?: ");
@@ -120,6 +125,13 @@ public class DunRunMain {
 		System.out.println("[3]:Rogue, you walk alone and betrayed your people ");
 		
 		int choice;
+		// |
+		// |
+		// |
+		// 
+		//
+		
+		
 		
 		choice = sc.nextInt();
 		
@@ -172,7 +184,6 @@ public class DunRunMain {
 		Dungeon testdun = new Dungeon(player.level);
 		
 		testdun.play(player);
-		sc.close();
 	}
 
 	
