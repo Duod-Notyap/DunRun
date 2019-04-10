@@ -1,20 +1,24 @@
 package base;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 
 public class Shop {
 	
 	public HashMap<Item, Integer> itemsForSale = new HashMap<Item, Integer>();
 	
 	public Shop() {
-		this.itemsForSale.put(new Item(Item.PRDF_ROCK), 10);
-		
+		addItems();
 	}
 	
-	
+	/**
+	 * completes the transaction lists items checks funds changes balance
+	 * @param player    the player
+	 * @return          returns players gold after transaction
+	 */
+	@SuppressWarnings("static-access")
 	public int transaction(Character player) {
+		Util u = new Util();
+		System.out.println("Players Gold:" + player.gold);
 		int price = itemsForSale.get(itemsForSale.keySet().toArray()[0]);
 		Item item = (Item)itemsForSale.keySet().toArray()[0];
 		System.out.println("Items for sale: " );
@@ -25,9 +29,8 @@ public class Shop {
 			
 		}
 		
-		Scanner sc = new Scanner(System.in);
 		System.out.println("Which would you like?");
-		int choice = sc.nextInt();
+		int choice = u.getInputasInt();
 		if (player.gold > price){
 			player.inventory.add((Item)itemsForSale.keySet().toArray()[choice-1]);
 			player.gold -= price;
@@ -37,6 +40,18 @@ public class Shop {
 			System.out.println("you have insufficient funds");
 		}
 		return player.gold;
+	}
+	
+	/**
+	 * adds items to the shop
+	 */
+	public void addItems() {
+		this.itemsForSale.put(new Item(Item.PRDF_ROCK), 3);
+		this.itemsForSale.put(new Item(Item.PRDF_SNOODLESTICK), 20);
+		this.itemsForSale.put(new Item(Item.PRDF_SMALLAXE), 10);
+		this.itemsForSale.put(new Item(Item.PRDF_DAGGER), 8);
+		this.itemsForSale.put(new Item(Item.PRDF_LEATHERARMOR), 15);
+		this.itemsForSale.put(new Item(Item.PRDF_BATTLEAXE), 25 );
 	}
 	
 }

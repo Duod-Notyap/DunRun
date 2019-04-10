@@ -1,8 +1,8 @@
 package base;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Character extends Entity {
+	public static int level;
+	public static int gold;
 	/**
 	 * 
 	 * @param n   name
@@ -14,8 +14,7 @@ public class Character extends Entity {
 	 * @param w   
 	 * @param mp
 	 */
-	public static int level;
-	public static int gold;
+	@SuppressWarnings("static-access")
 	public Character(String n, double hp, double att, double d, int lev, double ex, Item[] i, Item[] ei) {
 	
 		this.name = n;
@@ -36,36 +35,17 @@ public class Character extends Entity {
 	
 
 
-	/*
-	 * returns sum of current attack value + equipped weapons
+	/**
+	 * reutrns sum of attack value and equipped weapons
+	 * @param a  the enemy to adjust values for
+	 * @return   the damage total
 	 */
 	public double getDamageTot(Enemy a) {
 		int dmgtot = 0;
 		dmgtot += this.attack;
 		for(int i = 0;i<equippedItems.size();i++) {
-			dmgtot += (equippedItems.get(i).type==1) ? (double)equippedItems.get(i).factor/(double)a.defense : 0;
+			dmgtot += (equippedItems.get(i).type==1) ? (double)equippedItems.get(i).factor/(double)a.getDefense()*(Math.random()+1) : 0;
 		}
 		return (double)dmgtot;
-	}
-	
-	public static int CheckLevel(int a, int b) {
-		//checks the amount of experience and then levels up accordingly
-		if (exp == a) {
-			level = b;
-		}
-		else {
-			level = level;
-		}
-		return level;	
-			
-	}
-
-
-	public static void checkEveryLevel(){
-		//runs through a loop to determine the characters level
-		
-		for (int i = 2; i > 100;i++) {
-		CheckLevel(3*i,i);
-		}
 	}
 }

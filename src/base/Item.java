@@ -1,5 +1,7 @@
 package base;
 
+import java.util.Random;
+
 public class Item {
 	public static int HEAL = 0;
 	public static int SUPPORT_DMG = 1;
@@ -11,6 +13,12 @@ public class Item {
 	public static int PRDF_SMALLHEAL = 304;
 	public static int PRDF_LEATHERARMOR = 305;
 	public static int PRDF_FIREBALL = 306;
+	public static int PRDF_SMALLAXE = 307;
+	public static int PRDF_BATTLEAXE = 308;
+	public static int PRDF_SNOODLESTICK = 309;
+	public static int PRDF_SLING = 310;
+	public static int PRDF_IRONARMOR = 311;
+	public static int NUM_OF_PDRF_ITEMS = 311;
 	public int type;
 	public int factor;
 	public String name;
@@ -47,6 +55,23 @@ public class Item {
 	 * @param type  your input as params will be Item.PRDF_<insertitemhere>
 	 */
 	public Item(int type) {
+		defType(type);
+	}
+	
+	/**
+	 * tbh i dont remember why this exists
+	 * @param player
+	 */
+	public Item(Character player) {
+		Random r = new Random();
+		defType(r.nextInt(7)+300);
+	}
+
+	/**
+	 * used to create PRDF items
+	 * @param type the item id
+	 */
+	public void defType(int type) {
 		switch(type) {
 		case 300: this.name = "Dagger";
 				  this.type = 1;
@@ -77,23 +102,52 @@ public class Item {
 				  this.type = 1;
 				  this.factor = 10;
 				  break;
+		case 307: this.name = "Small Axe";
+				  this.type = 1;
+				  this.factor = 9;
+				  break;
+		case 308: this.name = "Battle Axe";
+				  this.type = 1;
+				  this.factor = 16;
+				  break;
+		case 309: this.name = "Snoodle Stick";
+				this.type = 1;
+				this.factor = 13;
+				break;		
+		case 310: this.name = "Sling";
+				this.type = 1;
+				this.factor = 12;
+				break;  
 		}
 	}
-	
+			
+	/**
+	 * function to use the item
+	 * @param entity   the player
+	 * @return
+	 */
 	public boolean use(Character entity) {
 		System.out.println(this.desc);
-		System.out.println("Are you sure you want to use this item?(y/n)");
-		java.util.Scanner sc = new java.util.Scanner(System.in);
-		String response = sc.next();
-		sc.close();
+		System.out.printf("Are you sure you want to use the %1$s?(y/n)\n", this.name);
+		String response = Util.getInput();;
 		if(response.equals("y")) {
 			switch(this.type) {
 			case 0: entity.curhp += (entity.curhp+factor>entity.basehp) ? entity.basehp-entity.curhp : this.factor;
 					System.out.printf("You used the %1$s and healed for %2$s hp.\n", this.name, this.factor);
+					entity.inventory.remove(this);
+					break;
 			case 1: entity.attack += factor;
-					System.out.printf("You used the %1$s and got %2$s extra damage.\n", this.name, this.factor);
+					if(!checkSlotFilled(entity)) {return false;}
+					System.out.printf("You equipped the %1$s and got %2$s extra damage.\n", this.name, this.factor);
+					entity.equippedItems.add(this);
+					entity.inventory.remove(this);
+					break;
 			case 2: entity.defense += factor;
-					System.out.printf("You used the %1$s and got %2$s extra defense.\n", this.name, this.factor);
+					if(!checkSlotFilled(entity)) {return false;}
+					System.out.printf("You equipped the %1$s and got %2$s extra defense.\n", this.name, this.factor);
+					entity.equippedItems.add(this);
+					entity.inventory.remove(this);
+					break;
 			}
 			return true;
 		}else if(response.equals("n")) { 
@@ -103,16 +157,38 @@ public class Item {
 		}
 	}
 	
+	/**
+	 * the Enemy class needed its own item method for ai(not implemented)
+	 * @param entity    The target enemy
+	 */
 	public void use(Enemy entity) {
 		switch(this.type) {
 		case 0: entity.curhp += (entity.curhp+factor>entity.basehp) ? entity.basehp-entity.curhp : this.factor;
 				System.out.printf("You used the %1$s and healed for %2$s hp.\n", this.name, this.factor);
+				break;
 		case 1: entity.attack += factor;
 				System.out.printf("You used the %1$s and got %2$s extra damage.\n", this.name, this.factor);
+				break;
 		case 2: entity.defense += factor;
 				System.out.printf("You used the %1$s and got %2$s extra defense.\n", this.name, this.factor);
+				break;
 		}
 		
+	}
+	
+	/**
+	 * checks if the player has an item of this type equipped
+	 * @param entity the player/entity to check
+	 * @return
+	 */
+	public boolean checkSlotFilled(Character entity) {
+		for(Item i : entity.equippedItems) {
+			if(i.type == this.type) {
+				System.out.printf("You already have %1$s equipped!\n", (this.type==1)?"a weapon":"armor");
+				return true;
+			}
+		}
+		return false;
 	}
 }
 

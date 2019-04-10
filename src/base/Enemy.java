@@ -1,5 +1,4 @@
 package base;
-import java.util.ArrayList;
 
 public class Enemy extends Entity {
 	
@@ -19,14 +18,16 @@ public class Enemy extends Entity {
 		
 	}
 
-	/*
-	 * returns sum of current attack value + equipped weapons
+	/**
+	 * returns sum of base damage and weapoans in equippedItems
+	 * @param a  the character to modify value based on player.getDefense()
+	 * @return
 	 */
 	public double getDamageTot(Character a) {
 		int dmgtot = 0;
 		dmgtot += this.attack;
 		for(int i = 0;i<equippedItems.size();i++) {
-			dmgtot += (equippedItems.get(i).type==1) ? (double)equippedItems.get(i).factor/(double)a.defense : 0;
+			dmgtot += (equippedItems.get(i).type==Item.SUPPORT_DMG) ? (double)equippedItems.get(i).factor/(double)a.getDefense()*(Math.random()+1) : 0;
 		}
 		return (double)dmgtot;
 	}

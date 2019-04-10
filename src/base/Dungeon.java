@@ -1,12 +1,11 @@
 package base;
 import java.util.Random;
-import java.util.Scanner;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.NoSuchElementException;
-import java.lang.NumberFormatException;
+import java.util.InputMismatchException;
+
 
 public class Dungeon {
+
 	public int seed;
 	public int dunLvl;
 	Random randomizer = new Random();
@@ -15,82 +14,103 @@ public class Dungeon {
 	public int enemType;
 	public String envAdj;
 	public String envConds;
-	ArrayList<Enemy> enemies = new ArrayList();
+	ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+	boolean bossenabled = false;
 	
 	public Dungeon(int lvl) {
 		this.seed = (int)(randomizer.nextDouble()*500000.0);
 		this.dunLvl = lvl;
-		this.enemType = randomizer.nextInt(1);	
+		this.enemType = randomizer.nextInt(3);		
+		this.bossenabled = true;
 	}
 	
 	public Dungeon(int lvl, int seed) {
 		this.seed = seed;
 		this.dunLvl = lvl;
-		this.enemType = randomizer.nextInt(2);	
+		this.enemType = randomizer.nextInt(3);		
+		this.bossenabled = true;
 	}
 	
 	public Dungeon(int lvl, int seed, int enemType) {
 		this.seed = seed;
 		this.dunLvl = lvl;
 		this.enemType = enemType;	
+		this.bossenabled = true;
 	}
 	
+	public Dungeon(int lvl, int seed, int enemType, boolean boss) {
+		this.seed = seed;
+		this.dunLvl = lvl;
+		this.enemType = enemType;	
+		this.bossenabled = boss;
+	}
+	
+	/**
+	 * generates the required variables and objects for the dungeon
+	 * @return  the enemy arraylist
+	 */
 	public ArrayList<Enemy> generate() {
-		int enemyCount = this.seed%4;
+		int enemyCount = this.seed%4+1;
 		Enemy demLord = new Enemy("Demon Lord", 250*((double)this.dunLvl/10.0), 80*((double)this.dunLvl/10.0), 35*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
 		Enemy gobKing = new Enemy("Goblin King", 300*((double)this.dunLvl/10.0), 60*((double)this.dunLvl/10.0), 40*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
-		switch(enemType) {
-		case 0: this.enemies.add(gobKing.copy());
-				this.envAdj = "Swampy";
-				this.envConds = "wet/muddy";
-				break;
-		case 1: this.enemies.add(demLord.copy());
-				this.envAdj = "Hellish";
-				this.envConds = "hot/dry";
-				break;
+		Enemy larSnoodle = new Enemy("The Large And Extra Snoodly Snoodle", 300*((double)this.dunLvl/10.0), 90*((double)this.dunLvl/10.0), 40*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
+		if(this.bossenabled) {
+			switch(enemType) {
+			case 0: this.enemies.add(gobKing);
+					this.envAdj = "Swampy";
+					this.envConds = "wet/muddy";
+					break;
+			case 1: this.enemies.add(demLord);
+					this.envAdj = "Hellish";
+					this.envConds = "hot/dry";
+					break;
+
+			case 2: this.enemies.add(larSnoodle);
+					this.envAdj = "Rocky";
+					this.envConds = "hot/dry";
+					break;
+			}
 		}
-		
 		Enemy demonling = new Enemy("Demonling", 100*((double)this.dunLvl/10.0), 25*((double)this.dunLvl/10.0), 15*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
 		Enemy goblin = new Enemy("Goblin", 150*((double)this.dunLvl/10.0), 20*((double)this.dunLvl/10.0), 15*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
-		
-		switch(enemType) {
-		case 0: for(int i = 0;i<enemyCount;i++) {
-					this.enemies.add(goblin.copy());
-				}
-				break;
-		case 1: for(int i = 0;i<enemyCount;i++) {
-					this.enemies.add(demonling.copy());
-				}
-				break;
+		Enemy smallSnoodle = new Enemy("Little Snoodle", 160*((double)this.dunLvl/10.0), 30*((double)this.dunLvl/10.0), 20*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {new Item(Item.PRDF_SMALLKNIFE)});
+		for(int i = 0;i<enemyCount;i++) {
+			switch(enemType) {
+			case 0: this.enemies.add(goblin.copy());
+					break;
+			case 1: this.enemies.add(demonling.copy());
+					break;
+			case 2: this.enemies.add(smallSnoodle.copy());
+					break;
+			}
 		}
 		return this.enemies;
 	}
 	
+	/**
+	 * the method called to start the dungeon encounter
+	 * @param player  the player
+	 */
+	@SuppressWarnings("static-access")
 	public void play(Character player) {
-		ArrayList<Enemy> enemies = generate();		
-		Scanner sc = new Scanner(System.in);
+		this.enemies = generate();
 		Enemy enemy;
-		String enemPick = "";
 		int enemchoice;
-		boolean selectedSyntax;
+		Shop dun = new Shop();
+		int tvar = 0;
 		while(this.enemies.size() != 0) {
 			System.out.printf("There are %d enemies\n", enemies.size());
 			System.out.println("Which would you like to fight?");
 			for(int i = 0;i<enemies.size();i++) {
 				System.out.printf("%1$d. %2$s, lvl: %3$d\n", i+1, enemies.get(i).name, enemies.get(i).level); 
+				tvar = i;
 			}
-			enemPick = "";
-			selectedSyntax= false;
-			enemchoice = 0;
-			while(selectedSyntax != true) {
-				try {
-					enemPick = sc.next();
-					selectedSyntax = true;
-					enemchoice = Integer.parseInt(enemPick);
-				}catch(NumberFormatException e) {
-					System.out.println("Bad format try again");
-					e.printStackTrace();
-				}
+			
+			System.out.printf("%1$d. Shop\n", tvar+2);
+			enemchoice = Util.getInputasInt();
+			if(enemchoice==tvar+2) {
+				dun.transaction(player);
+				continue;
 			}
 			enemy = enemies.get(enemchoice-1);
 			System.out.println("your statis are "
@@ -107,8 +127,10 @@ public class Dungeon {
 								+ " Attack: " + enemy.attack
 								+ " Defense: " + enemy.defense
 								+ " HP: " + enemy.curhp);
+			
 			initBattle(player, enemy);
 		}
+		
 	}
 	public Boolean initBattle(Character player, Enemy enemy) { 
 		player.curhp = player.basehp; //reset health after each battle the enemies are too difficult to not do this.
@@ -116,21 +138,26 @@ public class Dungeon {
 		return ree;
 	}
 	
+	/**
+	 * the battle method
+	 * @param player  the player
+	 * @param enemy   the chosen enemy
+	 * @return        did they win?
+	 */
 	public Boolean battle(Character player, Enemy enemy) {
-		Scanner sc = new Scanner(System.in);
-		String actionSelect = "0";
 		int actionChoice;
 		actionChoice = 0;
 		System.out.printf("Player HP is at %1$f\n%2$s HP is at %3$f\n", player.curhp, enemy.name, enemy.curhp);
-		System.out.println("What would you like to do?\n1.Fight\n2.Items\n3.Retreat");
-		actionSelect = (sc.hasNextInt()) ? sc.next() : "0";
-		actionChoice = Integer.parseInt(actionSelect);
+		System.out.println("What would you like to do?\n1.Fight\n2.Items\n3.Equipped Items\n4.Retreat");
+		actionChoice = Util.getInputasInt();
 		switch(actionChoice) {
 		case 1: fight(player, enemy);
 				break;
 		case 2: inventory(player);
 				break;
-		case 3: retreat(player);
+		case 3: equipped(player);
+				break;
+		case 4: retreat(player);
 				break;
 		default:
 		}
@@ -138,8 +165,10 @@ public class Dungeon {
 		if(player.curhp > 0 && enemy.curhp > 0) {
 			battle(player, enemy);
 		}else if(player.curhp > 0 && enemy.curhp <= 0){
+			endBattle(player, enemy);
 			System.out.printf("You have defeated %1$s!", enemy.name);
 			this.enemies.remove(enemies.indexOf(enemy));
+			
 		}else if(player.curhp <=0 ) {
 			System.out.println("You lost");
 			try {
@@ -149,18 +178,15 @@ public class Dungeon {
 			}
 			System.exit(0);
 		}
+		
 		return true;
 	}
 	
-	public void fight2 (Character player, Enemy enemy) {
-		double edmgdiff = player.getDamageTot(enemy);
-		double pdmgdiff = enemy.getDamageTot(player);
-		player.curhp -= pdmgdiff;
-		System.out.println("you gave enemy " + edmgdiff + " Damage");
-		enemy.curhp -= edmgdiff;
-		System.out.println(pdmgdiff);
-	}
-	
+	/**
+	 * handles damage tradeoff
+	 * @param player   the player
+	 * @param enemy    the enemy
+	 */
 	public void fight(Character player, Enemy enemy) {
 		double edmgdiff = player.getDamageTot(enemy);
 		double pdmgdiff = enemy.getDamageTot(player);
@@ -170,8 +196,11 @@ public class Dungeon {
 		player.curhp -= pdmgdiff;
 	}
 	
+	/**
+	 * menu to handle use of consumables and equipping ofitems
+	 * @param player   the player
+	 */
 	public void inventory(Character player) {
-		Scanner sc = new Scanner(System.in);
 		boolean used = false;
 		while(used != true) {
 			System.out.println("What item would you like to use: ");
@@ -180,29 +209,87 @@ public class Dungeon {
 				System.out.printf("%1$d. %2$s\n", i+1, player.inventory.get(i).name);
 				lastNum = i;
 			}
-			System.out.printf("%d. Back\n", lastNum+1);
-			int menchoice = sc.nextInt();
-			if(lastNum + 1==menchoice) {
+			System.out.printf("%d. Back\n", lastNum+2);
+			int menchoice=0;
+			boolean synwork=false;
+			while(synwork!=true) {
+				menchoice=0;
+				try {
+					menchoice = Util.getInputasInt();
+					synwork=true;
+				}catch(InputMismatchException e) {
+					e.printStackTrace();
+				}
+			}
+			if(lastNum + 2==menchoice) {
 				used = true;
 			}else{
 				used = player.inventory.get(menchoice-1).use(player);
+				used = true;
 			}
 		}
 	}
 	
+	/**
+	 * level handling
+	 * @param player   the player
+	 * @return         the level
+	 */
+	@SuppressWarnings("static-access")
+	public static int checkLevel( Character player) {
+		//checks the amount of experience and then levels up accordingly
+		double expAmount = Math.pow(3, player.level);
+		if (player.exp >= expAmount) {
+			player.level += 1;
+			expAmount = Math.pow(3, player.level);
+			System.out.println("Congrats! you've leveled up to level " + player.level);
+			System.out.println("exp till next level: " + (expAmount - player.exp));
+			}
+		else {
+			player.level = player.level;
+			System.out.println("exp till next level: " + (expAmount - player.exp));
+		}
+		return player.level;	
+			
+	}
+/*	public static int checkEveryLevel(Character player){
+		for (int i = 1; i < 100; i ++) {
+			 CheckLevel(Math.pow(i,3),i, player);
+			}
+		return player.level;
+		} 
+*/
+
+		
+	/**
+	 * handles levelling
+	 * @param player  the player
+	 * @param enemy   the enemy defeated
+	 */
+	@SuppressWarnings("static-access")
 	public void battleGain(Character player, Enemy enemy){
 		//If the player is still alive run this method after battle
 	 player.exp += Math.pow(enemy.level,3);
-	 System.out.println("You now have"+ player.gold);
+	System.out.println("You have: " + player.exp + " Exp");
 	 player.gold += enemy.level;
+	 System.out.println("You now have: " +  + player.gold  + " Gold");
+	
 	}
 
+	/**
+	 * handles end of battle and loot
+	 * @param player
+	 * @param enemy
+	 */
+	@SuppressWarnings("static-access")
 	public void endBattle(Character player, Enemy enemy){
 		//updates gain at the end of a battle and determine 
 		if ((player.curhp >= 0) && (enemy.curhp <= 0)){
-			player.checkEveryLevel(); 
-			System.out.println("your current level is: " + player.level);
 			battleGain(player, enemy);
+			loot(player);
+			checkLevel(player); 
+			System.out.println("your current level is: " + player.level);
+
 		}
 		else if((player.curhp <= 0) && (enemy.curhp >= 0)){
 			System.out.println("You have died");
@@ -212,9 +299,47 @@ public class Dungeon {
 		}
 	}
 
-
-	public void retreat(Character player) {
-		
+	/**
+	 * menu option to remove an equipped item
+	 * @param player  the player to edit
+	 */
+	public void equipped(Character player) {
+		System.out.println("Dequip an item here");
+		System.out.println("Your equipped items are:");
+		int tvar = 0;
+		for(int i = 0;i<player.equippedItems.size();i++){
+			System.out.printf("%1$d.%2$s\n", i+1, player.equippedItems.get(i).name);
+			tvar = i;
+		}
+		System.out.printf("%1$d.Back\n", tvar+2);
+		int choice = Util.getInputasInt();
+		if(choice==tvar+2) {
+			return;
+		}
+		System.out.printf("Are you sure you want to dequip the %1$s?(y/n)\n", player.equippedItems.get(choice-1).name);
+		if(Util.getInput().toLowerCase().equals("y")) {
+			player.inventory.add(player.equippedItems.get(choice-1));
+			player.equippedItems.remove(player.equippedItems.get(choice-1));
+		}else {
+			equipped(player);
+		}
 	}
+	
+	/**
+	 * handles retreat chance its 50/50
+	 * @param player the player idk why prob need it later and to keep formatting with other menu options
+	 * @return       did the retreat succeed
+	 */
+	public boolean retreat(Character player) {
+		if(Math.random() > 0.5) {return true;}else {return false;}
+	}
+	
+	/**
+	 * random item given to player when battle over
+	 * @param player   the player
+	 */
+	public void loot(Character player) {
+		player.inventory.add(new Item(player));
+	}
+	
 }
- 
