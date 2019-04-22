@@ -2,6 +2,16 @@ package base;
 
 public class Enemy extends Entity {
 	
+	/**
+	 * generate an enemy
+	 * @param n           name
+	 * @param hp          base hp
+	 * @param att         base attack
+	 * @param d           base defense
+	 * @param lev         starting level
+	 * @param items       basic inventory
+	 * @param equipItems  equipped items
+	 */
 	public Enemy(String n, double hp, double att, double d, int lev, Item[] items, Item[] equipItems) {
 		this.name = n;
 		this.basehp = hp;

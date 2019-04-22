@@ -1,8 +1,15 @@
 package base;
 
 public class Character extends Entity {
-	public static int level;
-	public static int gold;
+	public int level;
+	public int gold;
+	public int type;
+	public double damagemlt = 1.0;
+	public String pronoun;
+	public Special spec = new Special(name, (int)damagemlt) {
+		public void use(Character p, Enemy e) {}
+		public void revert(Character p, Enemy e) {}
+	};
 	/**
 	 * 
 	 * @param n   name
@@ -11,10 +18,8 @@ public class Character extends Entity {
 	 * @param d   base defense
 	 * @param lev base level
 	 * @param ex  base exp
-	 * @param w   
-	 * @param mp
 	 */
-	@SuppressWarnings("static-access")
+	
 	public Character(String n, double hp, double att, double d, int lev, double ex, Item[] i, Item[] ei) {
 	
 		this.name = n;
@@ -36,7 +41,7 @@ public class Character extends Entity {
 
 
 	/**
-	 * reutrns sum of attack value and equipped weapons
+	 * returns sum of attack value and equipped weapons
 	 * @param a  the enemy to adjust values for
 	 * @return   the damage total
 	 */
@@ -44,8 +49,8 @@ public class Character extends Entity {
 		int dmgtot = 0;
 		dmgtot += this.attack;
 		for(int i = 0;i<equippedItems.size();i++) {
-			dmgtot += (equippedItems.get(i).type==1) ? (double)equippedItems.get(i).factor/(double)a.getDefense()*(Math.random()+1) : 0;
+			dmgtot += (equippedItems.get(i).type==1) ? ((double)equippedItems.get(i).factor/(double)a.getDefense())*(Math.random()+1) : 0;
 		}
-		return (double)dmgtot;
+		return (double)dmgtot*this.damagemlt;
 	}
 }

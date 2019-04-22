@@ -8,7 +8,7 @@ public class Entity {
 	public String name;
 	public double basehp;
 	public double curhp;
-	public static double exp;
+	public double exp;
 	public int level;
 	public int mp;
 	public ArrayList<Item> inventory =  new ArrayList<Item>();

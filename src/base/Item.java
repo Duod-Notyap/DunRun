@@ -6,6 +6,7 @@ public class Item {
 	public static int HEAL = 0;
 	public static int SUPPORT_DMG = 1;
 	public static int SUPPORT_DEF = 2;
+	public static int DRUGS = 3;
 	public static int PRDF_DAGGER = 300;
 	public static int PRDF_SMALLKNIFE = 301;
 	public static int PRDF_SWORD = 302;
@@ -18,7 +19,9 @@ public class Item {
 	public static int PRDF_SNOODLESTICK = 309;
 	public static int PRDF_SLING = 310;
 	public static int PRDF_IRONARMOR = 311;
-	public static int NUM_OF_PDRF_ITEMS = 311;
+	public static int PRDF_CAVEDUST = 312;
+	public static int NUM_OF_PDRF_ITEMS = 312;
+	
 	public int type;
 	public int factor;
 	public String name;
@@ -59,8 +62,8 @@ public class Item {
 	}
 	
 	/**
-	 * tbh i dont remember why this exists
-	 * @param player
+	 * makes a random item frmo PRDF items
+	 * @param player  just a signifier for it to know it's random
 	 */
 	public Item(Character player) {
 		Random r = new Random();
@@ -111,22 +114,31 @@ public class Item {
 				  this.factor = 16;
 				  break;
 		case 309: this.name = "Snoodle Stick";
-				this.type = 1;
-				this.factor = 13;
-				break;		
+				  this.type = 1;
+				  this.factor = 13;
+				  break;		
 		case 310: this.name = "Sling";
-				this.type = 1;
-				this.factor = 12;
-				break;  
+				  this.type = 1;
+				  this.factor = 12;
+				  break;  
+		case 311: this.name = "Iron Armor";
+				  this.type = 0;
+				  this.factor = 15;
+				  break;
+		case 312: this.name = "Cave Dust";
+				  this.desc = "(drugs make everything fun)";
+				  this.type = 3;
+				  this.factor = 15;
+				  break;	
 		}
+	
 	}
-			
 	/**
 	 * function to use the item
 	 * @param entity   the player
 	 * @return
 	 */
-	public boolean use(Character entity) {
+	public boolean use(Character entity, Enemy e) {
 		System.out.println(this.desc);
 		System.out.printf("Are you sure you want to use the %1$s?(y/n)\n", this.name);
 		String response = Util.getInput();;
@@ -148,6 +160,9 @@ public class Item {
 					entity.equippedItems.add(this);
 					entity.inventory.remove(this);
 					break;
+			case 3: drug(entity, e);
+					entity.inventory.remove(this);
+					break;
 			}
 			return true;
 		}else if(response.equals("n")) { 
@@ -157,6 +172,26 @@ public class Item {
 		}
 	}
 	
+	private void drug(Character p, Enemy e) {
+		if(this.name.equals("Cave Dust")) {
+			caveDust(p, e);
+		}
+	}
+	private void caveDust(Character p, Enemy e) {
+		Special caveDust = new Special("Cave Dust", 0) {
+			public void use(Character p, Enemy e) {
+				p.damagemlt *= 2.0;
+				System.out.println("Your damage is doubled!");
+				timer = -3;
+			}
+			public void revert(Character p, Enemy e) {
+				System.out.println("Cave Dust wore off!");
+				p.curhp -= 7;
+				p.damagemlt = 1.0;
+			}
+		};
+		caveDust.use(p, e);
+	}
 	/**
 	 * the Enemy class needed its own item method for ai(not implemented)
 	 * @param entity    The target enemy
@@ -172,6 +207,7 @@ public class Item {
 		case 2: entity.defense += factor;
 				System.out.printf("You used the %1$s and got %2$s extra defense.\n", this.name, this.factor);
 				break;
+
 		}
 		
 	}

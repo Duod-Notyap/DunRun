@@ -1,7 +1,6 @@
 package base;
 import java.util.Random;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 
 
 public class Dungeon {
@@ -11,12 +10,18 @@ public class Dungeon {
 	Random randomizer = new Random();
 	public int PRDF_GOBLINS = 0;
 	public int PRDF_DEMONS = 1;
+	public int PRDF_SNOODLE = 1;
 	public int enemType;
 	public String envAdj;
 	public String envConds;
 	ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	boolean bossenabled = false;
+	public int CLOCK = 0;
 	
+	/**
+	 * 
+	 * @param lvl the level of the dungeon you want
+	 */
 	public Dungeon(int lvl) {
 		this.seed = (int)(randomizer.nextDouble()*500000.0);
 		this.dunLvl = lvl;
@@ -24,6 +29,11 @@ public class Dungeon {
 		this.bossenabled = true;
 	}
 	
+	/**
+	 * 
+	 * @param lvl    the level of the dungeon you want
+	 * @param seed   the seed you want to generate a specific dungeon
+	 */
 	public Dungeon(int lvl, int seed) {
 		this.seed = seed;
 		this.dunLvl = lvl;
@@ -31,6 +41,12 @@ public class Dungeon {
 		this.bossenabled = true;
 	}
 	
+	/**
+	 * 
+	 * @param lvl      the level of the dungeon you want
+	 * @param seed     the seed you want to generate a specific dungeon
+	 * @param enemType if you want to specify an enemy type PRDF_GOBLINS/DEMONS/SNOODLE
+	 */
 	public Dungeon(int lvl, int seed, int enemType) {
 		this.seed = seed;
 		this.dunLvl = lvl;
@@ -38,6 +54,13 @@ public class Dungeon {
 		this.bossenabled = true;
 	}
 	
+	/**
+	 * 
+	 * @param lvl      the level of the dungeon you want
+	 * @param seed     the seed you want to generate a specific dungeon
+	 * @param enemType if you want to specify an enemy type PRDF_GOBLINS/DEMONS/SNOODLE
+	 * @param boss     boss is enabled (default=true)
+	 */
 	public Dungeon(int lvl, int seed, int enemType, boolean boss) {
 		this.seed = seed;
 		this.dunLvl = lvl;
@@ -53,7 +76,7 @@ public class Dungeon {
 		int enemyCount = this.seed%4+1;
 		Enemy demLord = new Enemy("Demon Lord", 250*((double)this.dunLvl/10.0), 80*((double)this.dunLvl/10.0), 35*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
 		Enemy gobKing = new Enemy("Goblin King", 300*((double)this.dunLvl/10.0), 60*((double)this.dunLvl/10.0), 40*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
-		Enemy larSnoodle = new Enemy("The Large And Extra Snoodly Snoodle", 300*((double)this.dunLvl/10.0), 90*((double)this.dunLvl/10.0), 40*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
+		Enemy larSnoodle = new Enemy("The Large And Extra Snoodly Snoodle", 300*((double)this.dunLvl/10.0), 45*((double)this.dunLvl/10.0), 40*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
 		if(this.bossenabled) {
 			switch(enemType) {
 			case 0: this.enemies.add(gobKing);
@@ -74,6 +97,8 @@ public class Dungeon {
 		Enemy demonling = new Enemy("Demonling", 100*((double)this.dunLvl/10.0), 25*((double)this.dunLvl/10.0), 15*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
 		Enemy goblin = new Enemy("Goblin", 150*((double)this.dunLvl/10.0), 20*((double)this.dunLvl/10.0), 15*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
 		Enemy smallSnoodle = new Enemy("Little Snoodle", 160*((double)this.dunLvl/10.0), 30*((double)this.dunLvl/10.0), 20*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {new Item(Item.PRDF_SMALLKNIFE)});
+		Enemy rat = new Enemy("Mutant Rat", 90*((double)this.dunLvl/10.0), 10*((double)this.dunLvl/10.0), 15*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
+		
 		for(int i = 0;i<enemyCount;i++) {
 			switch(enemType) {
 			case 0: this.enemies.add(goblin.copy());
@@ -81,6 +106,8 @@ public class Dungeon {
 			case 1: this.enemies.add(demonling.copy());
 					break;
 			case 2: this.enemies.add(smallSnoodle.copy());
+					break;
+			case 3: this.enemies.add(rat.copy());
 					break;
 			}
 		}
@@ -91,7 +118,6 @@ public class Dungeon {
 	 * the method called to start the dungeon encounter
 	 * @param player  the player
 	 */
-	@SuppressWarnings("static-access")
 	public void play(Character player) {
 		this.enemies = generate();
 		Enemy enemy;
@@ -107,7 +133,7 @@ public class Dungeon {
 			}
 			
 			System.out.printf("%1$d. Shop\n", tvar+2);
-			enemchoice = Util.getInputasInt();
+			enemchoice = Util.getInputasInt(tvar+2);
 			if(enemchoice==tvar+2) {
 				dun.transaction(player);
 				continue;
@@ -145,20 +171,34 @@ public class Dungeon {
 	 * @return        did they win?
 	 */
 	public Boolean battle(Character player, Enemy enemy) {
+		player.spec.time(player, enemy);
+		this.CLOCK += 1;
+		System.out.println(player.spec.timer);
 		int actionChoice;
 		actionChoice = 0;
 		System.out.printf("Player HP is at %1$f\n%2$s HP is at %3$f\n", player.curhp, enemy.name, enemy.curhp);
-		System.out.println("What would you like to do?\n1.Fight\n2.Items\n3.Equipped Items\n4.Retreat");
-		actionChoice = Util.getInputasInt();
+		System.out.println("What would you like to do?\n1.Fight\n2.Items\n3.Equipped Items\n4.Special\n5.Retreat");
+		actionChoice = Util.getInputasInt(5);
 		switch(actionChoice) {
 		case 1: fight(player, enemy);
 				break;
-		case 2: inventory(player);
+		case 2: inventory(player, enemy);
 				break;
 		case 3: equipped(player);
 				break;
-		case 4: retreat(player);
+		
+		case 4: if(player.spec.timer  >= player.spec.cooldown) {
+					player.spec.use(player,  enemy);
+				}else {
+					player.spec.timer -= 1;
+					System.out.println("You cant use that yet");
+				}
 				break;
+		case 5: if(retreat(player)) {
+					return false;
+				}
+				break;
+
 		default:
 		}
 		
@@ -200,7 +240,7 @@ public class Dungeon {
 	 * menu to handle use of consumables and equipping ofitems
 	 * @param player   the player
 	 */
-	public void inventory(Character player) {
+	public void inventory(Character player, Enemy enemy) {
 		boolean used = false;
 		while(used != true) {
 			System.out.println("What item would you like to use: ");
@@ -210,21 +250,12 @@ public class Dungeon {
 				lastNum = i;
 			}
 			System.out.printf("%d. Back\n", lastNum+2);
-			int menchoice=0;
-			boolean synwork=false;
-			while(synwork!=true) {
-				menchoice=0;
-				try {
-					menchoice = Util.getInputasInt();
-					synwork=true;
-				}catch(InputMismatchException e) {
-					e.printStackTrace();
-				}
-			}
+			int menchoice=0;	
+			menchoice = Util.getInputasInt(lastNum+2);
 			if(lastNum + 2==menchoice) {
-				used = true;
+			used = true;
 			}else{
-				used = player.inventory.get(menchoice-1).use(player);
+				used = player.inventory.get(menchoice-1).use(player, enemy);
 				used = true;
 			}
 		}
@@ -235,12 +266,15 @@ public class Dungeon {
 	 * @param player   the player
 	 * @return         the level
 	 */
-	@SuppressWarnings("static-access")
 	public static int checkLevel( Character player) {
 		//checks the amount of experience and then levels up accordingly
 		double expAmount = Math.pow(3, player.level);
 		if (player.exp >= expAmount) {
 			player.level += 1;
+			player.attack += 5;
+			player.defense += 3;
+			player.mp += 4;
+			player.basehp += 10;
 			expAmount = Math.pow(3, player.level);
 			System.out.println("Congrats! you've leveled up to level " + player.level);
 			System.out.println("exp till next level: " + (expAmount - player.exp));
@@ -266,14 +300,13 @@ public class Dungeon {
 	 * @param player  the player
 	 * @param enemy   the enemy defeated
 	 */
-	@SuppressWarnings("static-access")
 	public void battleGain(Character player, Enemy enemy){
 		//If the player is still alive run this method after battle
 	 player.exp += Math.pow(enemy.level,3);
 	System.out.println("You have: " + player.exp + " Exp");
 	 player.gold += enemy.level;
 	 System.out.println("You now have: " +  + player.gold  + " Gold");
-	
+	 
 	}
 
 	/**
@@ -281,7 +314,6 @@ public class Dungeon {
 	 * @param player
 	 * @param enemy
 	 */
-	@SuppressWarnings("static-access")
 	public void endBattle(Character player, Enemy enemy){
 		//updates gain at the end of a battle and determine 
 		if ((player.curhp >= 0) && (enemy.curhp <= 0)){
@@ -331,7 +363,17 @@ public class Dungeon {
 	 * @return       did the retreat succeed
 	 */
 	public boolean retreat(Character player) {
-		if(Math.random() > 0.5) {return true;}else {return false;}
+		if(Math.random() > 0.5) {
+			System.out.println("Excape succeeded");
+			return true;
+		}else {
+			System.out.println("Escape failed!");
+			return false;
+		}
+	}
+	
+	public void special(Character player) {
+		
 	}
 	
 	/**
