@@ -47,10 +47,14 @@ public class Character extends Entity {
 	 */
 	public double getDamageTot(Enemy a) {
 		int dmgtot = 0;
-		dmgtot += this.attack;
 		for(int i = 0;i<equippedItems.size();i++) {
-			dmgtot += (equippedItems.get(i).type==1) ? ((double)equippedItems.get(i).factor/(double)a.getDefense())*(Math.random()+1) : 0;
+			dmgtot += (equippedItems.get(i).type==1) ? (1/(double)equippedItems.get(i).factor)*a.defense : 0;
 		}
-		return (double)dmgtot*this.damagemlt;
+		dmgtot++;
+		return Math.round(this.attack+((double)dmgtot*this.damagemlt*(Math.random()+1))*(1+a.defense/this.defense));
+	}
+	
+	public double getAttack(Enemy e) {
+		return (this.attack*this.damagemlt)/(e.defense/2);
 	}
 }

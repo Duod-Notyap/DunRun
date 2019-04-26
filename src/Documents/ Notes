@@ -39,4 +39,5 @@ OVERALL MECHANINICS:
 	 	
 	 	
 
-		
+		LaTeX for damage eq
+		D = P_{A}+((\sum_{i=0}^{n}(\frac{E_{D}}{I_{i_{F}}}))*P_{M}*(a)*(1+\frac{E_{D}}{P_{D}}))\newline where \; P_{A}\;is\;the\;player's\;base\;attack\newline n\;is\;theamount\;of\;items\newline E_{D}\;is\;the\;enemy's\;defense\newline I_{i_{F}}\;is\;the\;current\;item's\;factor\newline P_{M}\;is\;the\;damage\;multiplier\newline a\;is\;a\;random\;number\;between\;1\;and\;2\newline and\;P_{D}\;is\;the\;player's\;defense\;stat

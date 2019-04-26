@@ -8,16 +8,19 @@ public class Dungeon {
 	public int seed;
 	public int dunLvl;
 	Random randomizer = new Random();
-	public int PRDF_GOBLINS = 0;
-	public int PRDF_DEMONS = 1;
-	public int PRDF_SNOODLE = 1;
+	public static int PRDF_GOBLINS = 0;
+	public static int PRDF_DEMONS = 1;
+	public static int PRDF_SNOODLE = 2;
+	public static int PRDF_SPIDER = 3;
+	public int ENEM_TYPE_COUNT = 4;
 	public int enemType;
 	public String envAdj;
 	public String envConds;
 	ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	boolean bossenabled = false;
 	public int CLOCK = 0;
-	
+	public boolean shop = false;
+	public boolean itemsEnabled = true;
 	/**
 	 * 
 	 * @param lvl the level of the dungeon you want
@@ -25,7 +28,7 @@ public class Dungeon {
 	public Dungeon(int lvl) {
 		this.seed = (int)(randomizer.nextDouble()*500000.0);
 		this.dunLvl = lvl;
-		this.enemType = randomizer.nextInt(3);		
+		this.enemType = randomizer.nextInt(this.ENEM_TYPE_COUNT);		
 		this.bossenabled = true;
 	}
 	
@@ -37,7 +40,7 @@ public class Dungeon {
 	public Dungeon(int lvl, int seed) {
 		this.seed = seed;
 		this.dunLvl = lvl;
-		this.enemType = randomizer.nextInt(3);		
+		this.enemType = randomizer.nextInt(this.ENEM_TYPE_COUNT);		
 		this.bossenabled = true;
 	}
 	
@@ -69,6 +72,46 @@ public class Dungeon {
 	}
 	
 	/**
+	 * 
+	 * @param lvl      the level of the dungeon you want
+	 * @param seed     the seed you want to generate a specific dungeon
+	 * @param enemType if you want to specify an enemy type PRDF_GOBLINS/DEMONS/SNOODLE
+	 * @param boss     boss is enabled (default=true)
+	 */
+	public Dungeon(int lvl, int seed, int enemType, boolean boss, boolean shop) {
+		this.seed = seed;
+		this.dunLvl = lvl;
+		this.enemType = enemType;	
+		this.bossenabled = boss;
+		this.shop = shop;
+	}
+	
+	public Dungeon(int lvl, int seed, int enemType, boolean boss, boolean shop, boolean itemsEnabled) {
+		this.seed = seed;
+		this.dunLvl = lvl;
+		this.enemType = enemType;	
+		this.bossenabled = boss;
+		this.shop = shop;
+		this.itemsEnabled = itemsEnabled;
+	}
+
+	public Dungeon(int lvl, Enemy[] enems) {
+		this.seed = (int)(randomizer.nextDouble()*500000.0);
+		this.dunLvl = lvl;
+		this.enemType = randomizer.nextInt(this.ENEM_TYPE_COUNT);	
+		this.bossenabled = true;
+		this.shop = true;
+	}
+	
+	public Dungeon(int lvl, Enemy[] enems, boolean boss) {
+		this.seed = (int)(randomizer.nextDouble()*500000.0);
+		this.dunLvl = lvl;
+		this.enemType = randomizer.nextInt(this.ENEM_TYPE_COUNT);	
+		this.bossenabled = boss;
+		this.shop = true;
+	}
+	
+	/**
 	 * generates the required variables and objects for the dungeon
 	 * @return  the enemy arraylist
 	 */
@@ -77,6 +120,7 @@ public class Dungeon {
 		Enemy demLord = new Enemy("Demon Lord", 250*((double)this.dunLvl/10.0), 80*((double)this.dunLvl/10.0), 35*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
 		Enemy gobKing = new Enemy("Goblin King", 300*((double)this.dunLvl/10.0), 60*((double)this.dunLvl/10.0), 40*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
 		Enemy larSnoodle = new Enemy("The Large And Extra Snoodly Snoodle", 300*((double)this.dunLvl/10.0), 45*((double)this.dunLvl/10.0), 40*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
+		Enemy spidQueen = new Enemy("Spider Queen", 200*((double)this.dunLvl/10.0), 55*((double)this.dunLvl/10.0), 40*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
 		if(this.bossenabled) {
 			switch(enemType) {
 			case 0: this.enemies.add(gobKing);
@@ -87,10 +131,13 @@ public class Dungeon {
 					this.envAdj = "Hellish";
 					this.envConds = "hot/dry";
 					break;
-
 			case 2: this.enemies.add(larSnoodle);
 					this.envAdj = "Rocky";
 					this.envConds = "hot/dry";
+					break;
+			case 3: this.enemies.add(spidQueen);
+					this.envAdj = "Cave-like";
+					this.envConds = "wet/damp";
 					break;
 			}
 		}
@@ -98,7 +145,7 @@ public class Dungeon {
 		Enemy goblin = new Enemy("Goblin", 150*((double)this.dunLvl/10.0), 20*((double)this.dunLvl/10.0), 15*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
 		Enemy smallSnoodle = new Enemy("Little Snoodle", 160*((double)this.dunLvl/10.0), 30*((double)this.dunLvl/10.0), 20*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {new Item(Item.PRDF_SMALLKNIFE)});
 		Enemy rat = new Enemy("Mutant Rat", 90*((double)this.dunLvl/10.0), 10*((double)this.dunLvl/10.0), 15*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
-		
+		Enemy spider = new Enemy("Spiderling", 70*((double)this.dunLvl/10.0), 40*((double)this.dunLvl/10.0), 10*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
 		for(int i = 0;i<enemyCount;i++) {
 			switch(enemType) {
 			case 0: this.enemies.add(goblin.copy());
@@ -107,7 +154,7 @@ public class Dungeon {
 					break;
 			case 2: this.enemies.add(smallSnoodle.copy());
 					break;
-			case 3: this.enemies.add(rat.copy());
+			case 3: this.enemies.add(spider.copy());
 					break;
 			}
 		}
@@ -126,6 +173,7 @@ public class Dungeon {
 		int tvar = 0;
 		while(this.enemies.size() != 0) {
 			System.out.printf("There are %d enemies\n", enemies.size());
+			Util.sleep(300);
 			System.out.println("Which would you like to fight?");
 			for(int i = 0;i<enemies.size();i++) {
 				System.out.printf("%1$d. %2$s, lvl: %3$d\n", i+1, enemies.get(i).name, enemies.get(i).level); 
@@ -134,9 +182,11 @@ public class Dungeon {
 			
 			System.out.printf("%1$d. Shop\n", tvar+2);
 			enemchoice = Util.getInputasInt(tvar+2);
-			if(enemchoice==tvar+2) {
+			if(enemchoice==tvar+2 && this.shop) {
 				dun.transaction(player);
 				continue;
+			}else if(!this.shop && enemchoice == tvar+2) {
+				System.out.println("This is not available right now!");
 			}
 			enemy = enemies.get(enemchoice-1);
 			System.out.println("your statis are "
@@ -153,11 +203,18 @@ public class Dungeon {
 								+ " Attack: " + enemy.attack
 								+ " Defense: " + enemy.defense
 								+ " HP: " + enemy.curhp);
-			
+			Util.sleep(200);
 			initBattle(player, enemy);
 		}
 		
 	}
+	
+	/**
+	 * initializes the battle methods
+	 * @param player
+	 * @param enemy
+	 * @return
+	 */
 	public Boolean initBattle(Character player, Enemy enemy) { 
 		player.curhp = player.basehp; //reset health after each battle the enemies are too difficult to not do this.
 		boolean ree = battle(player, enemy);
@@ -168,7 +225,7 @@ public class Dungeon {
 	 * the battle method
 	 * @param player  the player
 	 * @param enemy   the chosen enemy
-	 * @return        did they win?
+	 * @return        did they win?(yes=true)
 	 */
 	public Boolean battle(Character player, Enemy enemy) {
 		player.spec.time(player, enemy);
@@ -180,7 +237,11 @@ public class Dungeon {
 		System.out.println("What would you like to do?\n1.Fight\n2.Items\n3.Equipped Items\n4.Special\n5.Retreat");
 		actionChoice = Util.getInputasInt(5);
 		switch(actionChoice) {
-		case 1: fight(player, enemy);
+		case 1: if(this.itemsEnabled) {
+					fight(player, enemy);
+				}else if(!this.itemsEnabled) {
+					fightNoItems(player, enemy);
+				}
 				break;
 		case 2: inventory(player, enemy);
 				break;
@@ -236,6 +297,14 @@ public class Dungeon {
 		player.curhp -= pdmgdiff;
 	}
 	
+	public void fightNoItems(Character p, Enemy e) {
+		double edmgdiff = p.getAttack(e);
+		double pdmgdiff = e.getDamageTot(p);
+		System.out.printf("You hit the enemy for %1$f damage!\n", edmgdiff);
+		e.curhp -= edmgdiff;
+		System.out.printf("%1$s hit you for %2$f damage!\n", e.name, pdmgdiff);
+		p.curhp -= pdmgdiff;
+	}
 	/**
 	 * menu to handle use of consumables and equipping ofitems
 	 * @param player   the player
@@ -271,7 +340,7 @@ public class Dungeon {
 		double expAmount = Math.pow(3, player.level);
 		if (player.exp >= expAmount) {
 			player.level += 1;
-			player.attack += 5;
+			player.attack += 32;
 			player.defense += 3;
 			player.mp += 4;
 			player.basehp += 10;
@@ -370,10 +439,6 @@ public class Dungeon {
 			System.out.println("Escape failed!");
 			return false;
 		}
-	}
-	
-	public void special(Character player) {
-		
 	}
 	
 	/**

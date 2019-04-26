@@ -1,19 +1,10 @@
 What needs to be done right now:
 
 	PAYTON:
-		-Fix fight loop [Completed]
-		-once a fight ends it redirects you to the remaining enemies [Completed]
-		-Fix the process of returning to remaining enemies [Completed]
-		-Move to next dungeon
-		
-		
-		
-			NOTE: lets get a basic fight loop working and than we can work with aimed shots.
+		-Random shop items
+		-Levelled items	
 		
 	THOMAS: 
 		-Make Shop better
 		-Work on guides and read me 
-		-Make the battle gain work [Completed]
-		-
-		
-		
+

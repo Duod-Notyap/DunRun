@@ -1,7 +1,6 @@
 package base;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import javax.sound.sampled.*;
 import sun.audio.*;
 import org.apache.commons.lang3.math.NumberUtils;
 import java.io.*;
@@ -10,6 +9,10 @@ public class Util {
 	
 	private static Scanner sc = new Scanner(System.in);
 	
+	/**
+	 * gets input as string
+	 * @return
+	 */
 	public static String getInput() {
 		String inp;	
 		while(true) {
@@ -22,6 +25,10 @@ public class Util {
 		}
 	}
 	
+	/**
+	 * gets input and returns as an int
+	 * @return
+	 */
 	public static int getInputasInt() {
 		int inp = 0;
 		while(true) {
@@ -39,6 +46,11 @@ public class Util {
 		}
 	}
 	
+	/**
+	 * gets input and returns as an int will as again if above max
+	 * @param max  specified maximum
+	 * @return
+	 */
 	public static int getInputasInt(int max) {
 		int inp = 0;
 		while(true) {
@@ -59,13 +71,27 @@ public class Util {
 		}
 	}
 	
-	public void playSound(String file) throws IOException {
-		InputStream in = new FileInputStream(file);
-		AudioStream a = new AudioStream(in);
-		AudioPlayer.player.start(a);
+	/**
+	 * plays the .wav at file path
+	 * @param file  the file path
+	 * @throws IOException
+	 */
+	public static void playSound(String file) {
+		InputStream in;
+		try {
+			in = new FileInputStream(file);
+			AudioStream a = new AudioStream(in);
+			AudioPlayer.player.start(a);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
-	public void sleep(int t) {
+	/**
+	 * i was tired of writing try-catch
+	 * @param t
+	 */
+	public static void sleep(int t) {
 		try {
 			Thread.sleep(t);
 		}catch(InterruptedException e) {

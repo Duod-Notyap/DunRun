@@ -19,9 +19,13 @@ public class Shop {
 	 * @return          returns players gold after transaction
 	 */
 	public int transaction(Character player) {
+		System.out.println("you walk into a shop");
+		//door sound effect
+		System.out.println("[shop Keeper] What Can I Get Fur Ya?");
 		System.out.println("Players Gold:" + player.gold);
 		int price = itemsForSale.get(itemsForSale.keySet().toArray()[0]);
 		Item item = (Item)itemsForSale.keySet().toArray()[0];
+		
 		System.out.println("Items for sale: " );
 		for(int i = 0; i <= itemsForSale.size()-1; i++) {
 			price = itemsForSale.get(itemsForSale.keySet().toArray()[i]);
