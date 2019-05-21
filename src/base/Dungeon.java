@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class Dungeon {
 
 	public int seed;
-	public int dunLvl;
+	public int dunLvl = 1;
 	Random randomizer = new Random();
 	public static int PRDF_GOBLINS = 0;
 	public static int PRDF_DEMONS = 1;
@@ -120,7 +120,7 @@ public class Dungeon {
 		Enemy demLord = new Enemy("Demon Lord", 250*((double)this.dunLvl/10.0), 80*((double)this.dunLvl/10.0), 35*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
 		Enemy gobKing = new Enemy("Goblin King", 300*((double)this.dunLvl/10.0), 60*((double)this.dunLvl/10.0), 40*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
 		Enemy larSnoodle = new Enemy("The Large And Extra Snoodly Snoodle", 300*((double)this.dunLvl/10.0), 45*((double)this.dunLvl/10.0), 40*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
-		Enemy spidQueen = new Enemy("Spider Queen", 200*((double)this.dunLvl/10.0), 55*((double)this.dunLvl/10.0), 40*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
+		Enemy spidQueen = new Enemy("Spider Queen", 200*((double)this.dunLvl/10.0), 90*((double)this.dunLvl/10.0), 40*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
 		if(this.bossenabled) {
 			switch(enemType) {
 			case 0: this.enemies.add(gobKing);
@@ -144,8 +144,7 @@ public class Dungeon {
 		Enemy demonling = new Enemy("Demonling", 100*((double)this.dunLvl/10.0), 25*((double)this.dunLvl/10.0), 15*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
 		Enemy goblin = new Enemy("Goblin", 150*((double)this.dunLvl/10.0), 20*((double)this.dunLvl/10.0), 15*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
 		Enemy smallSnoodle = new Enemy("Little Snoodle", 160*((double)this.dunLvl/10.0), 30*((double)this.dunLvl/10.0), 20*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {new Item(Item.PRDF_SMALLKNIFE)});
-		Enemy rat = new Enemy("Mutant Rat", 90*((double)this.dunLvl/10.0), 10*((double)this.dunLvl/10.0), 15*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
-		Enemy spider = new Enemy("Spiderling", 70*((double)this.dunLvl/10.0), 40*((double)this.dunLvl/10.0), 10*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
+		Enemy spider = new Enemy("Spiderling", 70*((double)this.dunLvl/10.0), 40*((double)this.dunLvl/10.0), 15*((double)this.dunLvl/10.0), this.dunLvl, new Item[] {}, new Item[] {});
 		for(int i = 0;i<enemyCount;i++) {
 			switch(enemType) {
 			case 0: this.enemies.add(goblin.copy());
@@ -169,7 +168,7 @@ public class Dungeon {
 		this.enemies = generate();
 		Enemy enemy;
 		int enemchoice;
-		Shop dun = new Shop();
+		Shop dun = null;
 		int tvar = 0;
 		while(this.enemies.size() != 0) {
 			System.out.printf("There are %d enemies\n", enemies.size());
@@ -181,12 +180,18 @@ public class Dungeon {
 			}
 			
 			System.out.printf("%1$d. Shop\n", tvar+2);
-			enemchoice = Util.getInputasInt(tvar+2);
+			System.out.printf("%1$d. Flee\n", tvar+3);
+			enemchoice = Util.getInputasInt(tvar+3);
 			if(enemchoice==tvar+2 && this.shop) {
+				System.out.println(this.dunLvl);
+				dun = new Shop(this.dunLvl);
 				dun.transaction(player);
 				continue;
 			}else if(!this.shop && enemchoice == tvar+2) {
 				System.out.println("This is not available right now!");
+			}else if(enemchoice == tvar+3) {
+				retreat(player);
+				continue;
 			}
 			enemy = enemies.get(enemchoice-1);
 			System.out.println("your statis are "
@@ -243,9 +248,15 @@ public class Dungeon {
 					fightNoItems(player, enemy);
 				}
 				break;
-		case 2: inventory(player, enemy);
+		case 2: if(this.itemsEnabled)
+					inventory(player, enemy);
+				else
+					System.out.println("You dont have your items");
 				break;
-		case 3: equipped(player);
+		case 3: if(this.itemsEnabled)
+					equipped(player);
+				else
+					System.out.println("You dont have your items");
 				break;
 		
 		case 4: if(player.spec.timer  >= player.spec.cooldown) {

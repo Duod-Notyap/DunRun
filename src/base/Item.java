@@ -3,6 +3,13 @@ package base;
 import java.util.Random;
 
 public class Item {
+	public static final int NUM_OF_TIERS = 2;
+	/*
+	 * tier 1 items start at 300
+	 * 2 at 400
+	 * 3 at 500 so on
+	 */
+	//Tier 2
 	public static int HEAL = 0;
 	public static int SUPPORT_DMG = 1;
 	public static int SUPPORT_DEF = 2;
@@ -20,7 +27,11 @@ public class Item {
 	public static int PRDF_SLING = 310;
 	public static int PRDF_IRONARMOR = 311;
 	public static int PRDF_CAVEDUST = 312;
-	public static int NUM_OF_PDRF_ITEMS = 312;
+	public static int NUM_OF_TIER_1_PDRF_ITEMS = 12;
+	//Tier 2
+	public static int PRDF_LARGEHEAL = 400;
+	public static int PRDF_BIGSWORD = 401;
+	public static int NUM_OF_TIER_2_PDRF_ITEMS = 2;
 	
 	public int type;
 	public int factor;
@@ -129,7 +140,18 @@ public class Item {
 				  this.desc = "(drugs make everything fun)";
 				  this.type = 3;
 				  this.factor = 15;
-				  break;	
+				  break;
+		case 400: this.name = "Big Sword";
+				  this.type = 1;
+				  this.factor = 16;
+				  break;
+		case 401: this.name = "Large Heal";
+				  this.type = 0;
+				  this.factor = 35;
+				  break;
+		case 402: this.name = "Elven Dagger";
+				  this.type = 1;
+				  this.factor = 12;
 		}
 	
 	}
@@ -225,6 +247,22 @@ public class Item {
 			}
 		}
 		return false;
+	}
+	
+	public static int getNumOfTieredItems(int t) {
+		switch(t) {
+		case 1: return NUM_OF_TIER_1_PDRF_ITEMS;
+		case 2: return NUM_OF_TIER_2_PDRF_ITEMS;
+		}
+		return 1;
+	}
+	
+	public static int getTierPrefix(int t) {
+		switch(t) {
+		case 1: return 300;
+		case 2: return 400;
+		}
+		return 0;
 	}
 }
 

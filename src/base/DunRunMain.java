@@ -1,5 +1,8 @@
 package base;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class DunRunMain {
 	public static String name;
 	public static int attack;
@@ -146,74 +149,89 @@ public class DunRunMain {
 				break;
 		case 4: break;
 		}
-		story();
-//		Dungeon d = null;
-//		while(true) {
-//			d = new Dungeon(player.level);
-//			d.play(player);
-//		}
+		class Fd extends TimerTask {
+
+			@Override
+			public void run() {
+				Util.playSound("./assets/sounds/sound.wav");
+			}
+			
+		}
+		Timer t = new Timer();
+		Fd task = new Fd();
+		t.scheduleAtFixedRate(task, 2, 24000);
+		player.gold = 15000;
+//		story();
+		Dungeon d = null;
+		while(true) {
+		
+			d = new Dungeon(player.level, 3, Dungeon.PRDF_DEMONS, false, true);
+			d.play(player);
+		}
 	}
 	
 	public static void story() {
-		System.out.printf("One day a young %s was walking in the woods.\n", player.pronoun);
-		Util.sleep(100);
-		System.out.println("Then suddenly...");
-		Util.playSound("./assets/sounds/fall.wav");
-		System.out.println("They fell down a long and dark pit.");
-		Util.sleep(7000);
-		System.out.println("Immediately they notice they are surrounded by a group of goblins");
+		Shop s = new Shop(2);
+		s.transaction(player);
+//		System.out.printf("One day a young %s was walking in the woods.\n", player.pronoun);
+//		Util.sleep(100);
+//		System.out.println("Then suddenly...");
+//		Util.playSound("./assets/sounds/fall.wav");
+//		System.out.println("They fell down a long and dark pit.");
+//		Util.sleep(7000);
+//		System.out.println("Immediately they notice they are surrounded by a group of goblins");
 		Dungeon d = new Dungeon(1, 3, Dungeon.PRDF_GOBLINS, false, false);
-		d.play(player);
-		System.out.println("After defeating the goblins, the adventurer had no choice but to continue onward through the cave system.");
-		Util.sleep(2000);
-		System.out.println("Eventually the adventurer stumbled upon a giant ornate door. ");
-		Util.sleep(2000);
-		System.out.println("Of course the door had to be blocked by a group of demons, One of which seemed particularly powerful");
-		d = new Dungeon(player.level, 2, Dungeon.PRDF_DEMONS, true, false);
-		d.play(player);
-		System.out.printf("After the battle was over the adventurer stopped and admired the beautiful ornate doors. %1$s noticed a scrawl of text in the bottom of the door. it reads:\n\t\"Onward through the void,\n\tThe silence speaks my name\"\n", player.pronoun.split("/")[1].toUpperCase());
-		Util.sleep(2000);
-		System.out.println("Would you like to open them?(y/n)");
-		String sho = Util.getInput();
-		if(sho.equals("y")) {
-			Shop s = new Shop();
-			s.transaction(player);
-		}else{
-			System.out.println("You decide to leave the doors alone. The writing must have been a little too creepy");
-		}
-		Util.sleep(2000);
-		System.out.println("After that last encounter you feel tired. You decide to take a rest for a moment.");
-		Util.playSound("./assets/sounds/snor.wav");
-		Util.sleep(7500);
-		System.out.println("You wake up, bound in chains.");
-		Util.sleep(2000);
-		System.out.println("Upon looking up, you see your captor. A large snake person?");
-		Util.sleep(2000);
-		System.out.println("He looks back at you and says, \"Hey you. You're finally awake.\"");
-		Util.sleep(2000);
-		System.out.println("\"You are going to make me a lot of money.\"");
-		Util.sleep(2000);
-		System.out.println("Its ransom then.");
-		Util.sleep(2000);
-		System.out.println("You need to find a way out somehow.");
-		Util.sleep(2000);
-		System.out.println("You try to get the captor's attention. You find a rock and throw it. ITS A HIT!! But now he's pissed and begins storming in your direction.");
-		Util.sleep(2000);
-		System.out.println("He screams, \"ARE YOU TRYING TO GET YOURSELF KILLED YOU MORON?!\"");
-		Util.sleep(2000);
-		System.out.println("He puts his face right up against the cage. Perfect. Your arms are thin enough so you quickly reach between the bars and behind his head.");
-		Util.sleep(2000);
-		System.out.println("One sharp yank forward, his skull into a bar, and hes out cold");
-		Util.sleep(2000);
-		System.out.println("Lucky for you his keys are attached to his waist. You grab them, unlock your cage and you are free.");
-		Util.sleep(2000);
-		System.out.println("Your luck didnt last long because you made a bit of a racket with that smack.");
-		Util.sleep(2000);
-		System.out.println("Suddenly 3 more snake people come along. Get ready to fight.");
-		d = new Dungeon(player.level, 3, Dungeon.PRDF_SNOODLE, false, false);
-		Util.sleep(4500);
-		d.play(player);
-		Util.sleep(2000);
+//		d.play(player);
+//		System.out.println("After defeating the goblins, the adventurer had no choice but to continue onward through the cave system.");
+//		Util.sleep(2000);
+//		System.out.println("Eventually the adventurer stumbled upon a giant ornate door. ");
+//		Util.sleep(2000);
+//		System.out.println("Of course the door had to be blocked by a group of demons, One of which seemed particularly powerful");
+//		d = new Dungeon(player.level, 2, Dungeon.PRDF_DEMONS, true, false);
+//		d.play(player);
+//		System.out.printf("After the battle was over the adventurer stopped and admired the beautiful ornate doors. %1$s noticed a scrawl of text in the bottom of the door. it reads:\n\t\"Onward through the void,\n\tThe silence speaks my name\"\n", player.pronoun.split("/")[1].toUpperCase());
+//		Util.sleep(2000);
+//		System.out.println("Would you like to open them?(y/n)");
+//		String sho = Util.getInput();
+//		if(sho.equals("y")) {
+//			Shop s = new Shop();
+//			s.transaction(player);
+//		}else{
+//			System.out.println("You decide to leave the doors alone. The writing must have been a little too creepy");
+//		}
+//		Util.sleep(2000);
+//		System.out.println("After that last encounter you feel tired. You decide to take a rest for a moment.");
+//		Util.playSound("./assets/sounds/snor.wav");
+//		Util.sleep(7500);
+//		System.out.println("You wake up, bound in chains.");
+//		Util.sleep(2000);
+//		System.out.println("Upon looking up, you see your captor. A large snake person?");
+//		Util.sleep(2000);
+//		System.out.println("He looks back at you and says, \"Hey you. You're finally awake.\"");
+//		Util.sleep(2000);
+//		System.out.println("\"You are going to make me a lot of money.\"");
+//		Util.sleep(2000);
+//		System.out.println("Its ransom then.");
+//		Util.sleep(2000);
+//		System.out.println("You need to find a way out somehow.");
+//		Util.sleep(2000);
+//		System.out.println("You try to get the captor's attention. You find a rock and throw it. ITS A HIT!! But now he's pissed and begins storming in your direction.");
+//		Util.sleep(2000);
+//		System.out.println("He screams, \"ARE YOU TRYING TO GET YOURSELF KILLED YOU MORON?!\"");
+//		Util.sleep(2000);
+//		System.out.println("He puts his face right up against the cage. Perfect. Your arms are thin enough so you quickly reach between the bars and behind his head.");
+//		Util.sleep(2000);
+//		System.out.println("One sharp yank forward, his skull into a bar, and hes out cold");
+//		Util.sleep(2000);
+//		System.out.println("Lucky for you his keys are attached to his waist. You grab them, unlock your cage and you are free.");
+//		Util.sleep(2000);
+//		System.out.println("Your luck didnt last long because you made a bit of a racket with that smack.");
+//		Util.sleep(2000);
+//		System.out.println("Suddenly 3 more snake people come along. Get ready to fight.");
+//		d = new Dungeon(player.level, 3, Dungeon.PRDF_SNOODLE, false, false);
+//		Util.sleep(4500);
+//		d.play(player);
+//		Util.sleep(2000);
 		System.out.println("You walk away from the battle covered head to toe in the blood of your enemies.");
 		Util.sleep(2000);
 		System.out.println("You need to clean yourself.");
@@ -221,10 +239,12 @@ public class DunRunMain {
 		System.out.println("Eventually you find yourself standing in front of a waterfall.");
 		Util.sleep(2000);
 		System.out.println("You take off your clothes and decide to bathe in the running water.");
-		Util.playSound("./assets/souds/spider.wav");
+		Util.playSound("./assets/sounds/spider.wav");
 		Util.sleep(2000);
 		System.out.println("You immediately regret that decision as a couple of spiders descend upon your undefended body.");
 		Util.sleep(2000);
-		d = new Dungeon(player.level, 1, Dungeon.PRDF_SPIDER, false, false, false);
+		System.out.println("You have no items for this fight as they are too far away.");
+		d = new Dungeon(player.level, 2, Dungeon.PRDF_SPIDER, false, false, false);
+		d.play(player);
 	}
 }

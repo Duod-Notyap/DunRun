@@ -34,7 +34,6 @@ public class Util {
 		while(true) {
 			try {
 				inp = NumberUtils.toInt(sc.nextLine());
-				
 			}catch(InputMismatchException e) {
 				e.printStackTrace();
 			}
